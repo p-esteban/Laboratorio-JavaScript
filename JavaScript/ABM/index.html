@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./js/script.js" type="module"></script>
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <section id="titulo">
+      <h1>Alta - Baja - Modificacion</h1>
+    </section>
+
+    <div id="container">
+      <fieldset>
+        <legend>Informacion de personas</legend>
+        <form action="#">
+          <label for="txtNombre">Nombre :</label>
+          <input type="text" id="txtNombre" />
+          <label for="txtEmail">Email :</label>
+          <input type="email" id="txtEmail" />
+        </form>
+      </fieldset>
+    </div>
+
+    <div class="buttonContainer container">
+      <button class="botones" id="btnGuardar">
+        <img src="./image/save.png" alt="save icon" class="iconoBotones" />
+        Guardar
+      </button>
+      <button class="botones" id="btnModificar">
+        <img src="./image/edit.png" alt="modify icon" class="iconoBotones" />
+        Modificar
+      </button>
+      <button class="botones" id="btnEliminar">
+        <img src="./image/delete.png" alt="delete icon" class="iconoBotones" />
+        Eliminar
+      </button>
+      <button class="botones" id="btnCancelar">
+        <img
+          src="./image/go-back-left-arrow.png"
+          alt="cancel icon"
+          class="iconoBotones"
+        />
+        Cancelar
+      </button>
+    </div>
+
+    <div id="divTabla">
+      <!-- <table>
+        <tr>
+          <td>lunes</td>
+          <td></td>
+          <td></td>
+        </tr>
+        
+      </table> -->
+    </div>
+  </body>
+</html>
