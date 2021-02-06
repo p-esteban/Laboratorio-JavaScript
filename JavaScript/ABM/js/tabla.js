@@ -13,8 +13,8 @@ export function crearTabla(array) {
 
     //agregar la cabecera con los titulos a la tabla
     table.appendChild(crearCabecera(array[0]));
-    let x = crearBody(array);
-    table.appendChild(x);
+    let body = crearBody(array);
+    table.appendChild(body);
 
     section.appendChild(table);
 
@@ -78,11 +78,13 @@ function crearBody(array) {
     
 }
 
+
+//agrego manejadro a cada TD
 function agregarManejadorTD(td) {
     if (td) {
         td.addEventListener("click", (e)=>{
             itemSeleccionado = e.target.parentNode.dataset.id;
-            console.log("el id seleccionado es: "+itemSeleccionado);
+            //console.log("el id seleccionado es: "+itemSeleccionado);
         });
     }
 }

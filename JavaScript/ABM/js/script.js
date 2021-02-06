@@ -1,16 +1,11 @@
 import { Persona } from "./persona.js";
 import { crearTabla, itemSeleccionado } from "./tabla.js";
 
-
 let form = document.forms[0];
 let nombre;
 let email;
 let listaPersonas = [];
 let ultimoID = 0;
-
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-});
 
 //me traigo los botones
 let btnGuardar = document.getElementById("btnGuardar");
@@ -21,95 +16,117 @@ let btnCancelar = document.getElementById("btnCancelar");
 //me traigo el div de la tabla
 let divTabla = document.getElementById("divTabla");
 
-
-//agrego manejador al evento click del boton Guardar
-btnGuardar.addEventListener("click", () => {
-   
-    crearTabla(Alta());
-
-});
-
-divTabla.addEventListener("click",()=>{
-    actualizarFomulario(getById(itemSeleccionado));
-});
-
-btnModificar.addEventListener("click",()=>{
-    Modificar(itemSeleccionado);
+//agrego manejador al evento load
+window.addEventListener("load",()=>{
     divTabla.innerHTML = "";
-    crearTabla(leerLS());
-
+    crearTabla(JSON.parse(localStorage.getItem("personas")));
 });
+
+//cancelo el evento submit del formulario
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+});
+
+//
+//agrego los manejadores de eventos
+//
+divTabla.addEventListener("click", () => {
+  const persona = getById(itemSeleccionado);
+  document.getElementById("txtNombre").value = persona.nombre;
+  document.getElementById("txtEmail").value = persona.email;
+});
+
+btnGuardar.addEventListener("click", () => {
+  crearTabla(Alta());
+});
+
+btnModificar.addEventListener("click", () => {
+  Modificar(itemSeleccionado);
+  divTabla.innerHTML = "";
+  crearTabla(JSON.parse(localStorage.getItem("personas")));
+});
+btnEliminar.addEventListener("click",()=>{
+    Eliminar(itemSeleccionado);
+    divTabla.innerHTML = "";
+  crearTabla(JSON.parse(localStorage.getItem("personas")));
+})
+
+//
+//ABM
+//
 
 //esta funcio crea una persona
 function Alta() {
-    LeerInput();
-    listaPersonas = leerLS();
-    ultimoID = getId() + 1;
-  let p = new Persona(ultimoID,nombre,email);
+  //obtengo los valores que ingresa el usuario
+  nombre = document.getElementById("txtNombre").value;
+  email = document.getElementById("txtEmail").value;
+
+  //obtengo ultimo id que guarde en LS
+  ultimoID = JSON.parse(localStorage.getItem("lastID")) + 1;
+
+  //creo un obejto persona
+  let p = new Persona(ultimoID, nombre, email);
+
+  //obtengo la lista gusrdad en LocalStorage
+  listaPersonas = JSON.parse(localStorage.getItem("personas"));
+
+  //agrego objeto persona a la lista
   listaPersonas.push(p);
-  guardarLS("personas",listaPersonas);
-  guardarLS("lastID",ultimoID);
+
+  //guardo la lista de personas en el LocalStorage
+  localStorage.setItem("personas", JSON.stringify(listaPersonas));
+  //guardo el ultimo ID en LocalStorage
+  localStorage.setItem("lastID", JSON.stringify(ultimoID));
+
+  //retorno la lista actualizada
   return listaPersonas;
 }
 
-function actualizarFomulario(persona) {
-     document.getElementById("txtNombre").value = persona.nombre;
-     document.getElementById("txtEmail").value = persona.email;
-}
-
+//obtengo el elemento de una lista a partir del ID que recibo como parametro
 function getById(id) {
-    const lista = leerLS();
-    for (const item of lista) {
-        if (item.id == id) {
-            return item;
-        }
+  const lista = JSON.parse(localStorage.getItem("personas"));
+  for (const item of lista) {
+    if (item.id == id) {
+      return item;
     }
+  }
 }
 
 //esta funcion modifica el objeto segun el id que recibe como parametro
 function Modificar(id) {
+  //obtengo la lista gusrdad en LocalStorage
+  const lista = JSON.parse(localStorage.getItem("personas"));
 
-    //buscar el la lista de Persona el objeto q tenga el id del parametro
+  for (const persona of lista) {
+    if (persona.id == id) {
+      //obtengo los valores que ingresa el usuario
+      nombre = document.getElementById("txtNombre").value;
+      email = document.getElementById("txtEmail").value;
 
-    const lista = leerLS();
-
-    for (const persona of lista) {
-        
-        if (persona.id == id) {
-            LeerInput();
-            persona.nombre = nombre;
-            persona.email = email;
-        }
+      //modifico los atributos del objeto persona
+      persona.nombre = nombre;
+      persona.email = email;
     }
-    ultimoID = getId();
-    localStorage.clear();
-    guardarLS("lastID",ultimoID);
-    guardarLS("personas",lista);
+  }
 
-
+  //guardo la lista de personas en el LocalStorage
+  localStorage.setItem("personas", JSON.stringify(lista));
+  //guardo el ultimo ID en LocalStorage
+  localStorage.setItem("lastID", JSON.stringify(ultimoID));
 }
 
+function Eliminar(id) {
+  //obtengo la lista gusrdad en LocalStorage
+  lista = JSON.parse(localStorage.getItem("personas"));
 
+  for (let i = 0; i < listaLength; i++) {
+    if (lista[i].id === id) {
+      //elimino el elemento
+      lista.splice(i, 1); // 1er param: indice del elemento, 2do: cuantos deseo eliminar.
 
-//lee los valores ingresdao en input
-function LeerInput() {
-  // traigo el valor de los input
-   nombre = document.getElementById("txtNombre").value;
-   email = document.getElementById("txtEmail").value;
+      //guardo la lista de personas en el LocalStorage
+      localStorage.setItem("personas", JSON.stringify(lista));
+      break;
+    }
+  }
 }
-
-//guardo en localstorage
-function guardarLS(key,value) {
-    localStorage.setItem(key,JSON.stringify(value));
-}
-
-//leo la lista de personas del localstorage
-function leerLS() {
-    return JSON.parse(localStorage.getItem("personas")) || [];
-}
-
-function getId() {
-    ultimoID = JSON.parse(localStorage.getItem("lastID") || 0);
-    return ultimoID;
-}
-
